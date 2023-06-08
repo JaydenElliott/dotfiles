@@ -22,6 +22,8 @@ keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
 
+-- generate uuid
+keymap.set("n", "<leader>u", ":r !uuidgen|sed 's/.*/\"&\"/'|tr \"[A-Z]\" \"[a-z]\"<CR>")
 
 -- telescope
 keymap.set('n', '<C-f><C-f>', ':Telescope find_files<CR>')
@@ -41,10 +43,10 @@ keymap.set(
 )
 
 -- harpoon
-keymap.set('n', "<leader>a", require("harpoon.mark").add_file)
-keymap.set('n', "<leader>r", require("harpoon.mark").rm_file)
-keymap.set('n', "<leader>c", require("harpoon.mark").clear_all)
-keymap.set('n', "<leader>e", require("harpoon.ui").toggle_quick_menu)
+keymap.set('n', "<leader>ha", require("harpoon.mark").add_file)
+keymap.set('n', "<leader>hr", require("harpoon.mark").rm_file)
+keymap.set('n', "<leader>hc", require("harpoon.mark").clear_all)
+keymap.set('n', "<leader>he", require("harpoon.ui").toggle_quick_menu)
 keymap.set('n', "<C-n>", require("harpoon.ui").nav_next)
 keymap.set('n', "<C-p>", require("harpoon.ui").nav_prev)
 
@@ -95,7 +97,6 @@ require('packer').startup(function(use)
     use 'wbthomason/packer.nvim'
     use('kaicataldo/material.vim')
     use('ryanoasis/vim-devicons')
-    use('preservim/nerdtree')
     use('BurntSushi/ripgrep')
     use('mbbill/undotree')
     use('preservim/nerdcommenter')
@@ -133,6 +134,9 @@ require('packer').startup(function(use)
     }
     use('simrat39/rust-tools.nvim')
     use 'j-hui/fidget.nvim'
+    require('packer').startup(function()
+        use { 'stevearc/dressing.nvim' }
+    end)
     use 'tamton-aquib/staline.nvim'
     use 'theprimeagen/harpoon'
     use { 'alexghergh/nvim-tmux-navigation', config = function()
@@ -152,13 +156,6 @@ require('packer').startup(function(use)
     use { "voldikss/vim-floaterm" }
 end)
 
-require("telescope").setup {
-    extensions = {
-        file_browser = {
-            hijack_netrw = true,
-        },
-    },
-}
 require("telescope").load_extension "file_browser"
 local previewers = require("telescope.previewers")
 local builtin = require("telescope.builtin")
@@ -191,7 +188,7 @@ require("mason").setup({
     }
 })
 require 'nvim-treesitter.configs'.setup {
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "rust", "typescript", "javascript", "sql" },
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "rust", "typescript", "javascript", "sql", "go" },
     sync_install = false,
     auto_install = true,
     highlight = {
@@ -220,7 +217,9 @@ lsp.ensure_installed({
     'lua_ls',
     'eslint',
     'rust_analyzer',
-    "sqlls"
+    "sqlls",
+    "gopls",
+    "clangd"
 })
 lsp.skip_server_setup({ 'rust_analyzer' })
 require('lspconfig').lua_ls.setup(lsp.nvim_lua_ls())
@@ -262,6 +261,7 @@ rt.setup({
             vim.keymap.set("n", "<C-f><C-h>", rt.hover_actions.hover_actions, { buffer = bufnr })
             -- Code action groups
             vim.keymap.set("n", "<C-f><C-a>", rt.code_action_group.code_action_group, { buffer = bufnr })
+            vim.keymap.set("n", "<C-f><C-r>", rt.runnables.runnables, { buffer = bufnr })
         end,
     },
     tools = {

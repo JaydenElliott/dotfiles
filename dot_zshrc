@@ -1,10 +1,14 @@
-# ENV VARS
+source ~/.env
+source ~/.alias
+
 export EDITOR="nvim"
-export ZSH="$HOME/.config/zsh/oh-my-zsh"
 alias n="cd $HOME/.config/nvim"
 
+export ZSH="$HOME/.config/zsh/oh-my-zsh"
+export ZSH_THEME="robbyrussell"
 
-# PATH
+
+# path
 path+=/usr/local/go/bin
 path+=/home/jaydenelliott/miniconda3/bin
 path+=/usr/bin
@@ -12,16 +16,17 @@ path+=/home/jaydenelliott/.local/share/bob/nvim-bin
 export PATH
 
 
-# PLUGINS
 plugins=(
     git
     zsh-autosuggestions
 	zsh-completions
+    z 
 )
-
-# OH-MY-ZSH
-ZSH_THEME="robbyrussell"
 source $ZSH/oh-my-zsh.sh
 
-# FZF
+# fzf
+export FZF_DEFAULT_COMMAND="fd . $HOME"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_ALT_C_COMMAND="fd -t d . $HOME"
 source /home/jaydenelliott/.config/zsh/fzf/shell/key-bindings.zsh
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
