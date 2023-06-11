@@ -1,3 +1,109 @@
+-----------------
+---  PLUGINS  ---
+-----------------
+require('packer').startup(function(use)
+    use 'wbthomason/packer.nvim'
+    use('kaicataldo/material.vim')
+    use('ryanoasis/vim-devicons')
+    use('BurntSushi/ripgrep')
+    use('mbbill/undotree')
+    use('preservim/nerdcommenter')
+    use('nvim-lua/popup.nvim')
+    use('nvim-lua/plenary.nvim')
+    use('nvim-telescope/telescope.nvim')
+    use {
+        "nvim-telescope/telescope-file-browser.nvim",
+        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
+    }
+    use { 'nvim-telescope/telescope-fzf-native.nvim', run =
+    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+    use('nvim-treesitter/nvim-treesitter')
+    use {
+        'VonHeikemen/lsp-zero.nvim',
+        branch = 'v2.x',
+        requires = {
+            -- LSP Support
+            { 'neovim/nvim-lspconfig' },
+            {
+                'williamboman/mason.nvim',
+                run = function()
+                    pcall(vim.cmd, 'MasonUpdate')
+                end,
+            },
+            { 'williamboman/mason-lspconfig.nvim' },
+            { 'hrsh7th/nvim-cmp' },
+            { 'hrsh7th/cmp-nvim-lsp' },
+            -- yeet the below plugins if cmp gets annoying
+            { 'hrsh7th/cmp-path' },
+            { 'hrsh7th/cmp-buffer' },
+            { 'L3MON4D3/LuaSnip' },
+            { 'saadparwaiz1/cmp_luasnip' },
+        }
+    }
+    use('simrat39/rust-tools.nvim')
+    use 'j-hui/fidget.nvim'
+    use 'tamton-aquib/staline.nvim'
+    use 'theprimeagen/harpoon'
+    use { 'alexghergh/nvim-tmux-navigation', config = function()
+        require 'nvim-tmux-navigation'.setup {
+            disable_when_zoomed = true, -- defaults to false
+            keybindings = {
+                left = "<C-h>",
+                down = "<C-j>",
+                up = "<C-k>",
+                right = "<C-l>",
+                last_active = "<C-\\>",
+                next = "<C-Space>",
+            }
+        }
+    end
+    }
+    use { "voldikss/vim-floaterm" }
+end)
+
+
+require("telescope").load_extension "file_browser"
+local previewers = require("telescope.previewers")
+local builtin = require("telescope.builtin")
+
+local delta_bcommits = previewers.new_termopen_previewer({
+    get_command = function(entry)
+        return {
+            "git",
+            "-c",
+            "core.pager=delta",
+            "-c",
+            "delta.side-by-side=false",
+            "diff",
+            entry.value .. "^!",
+            "--",
+            entry.current_file,
+        }
+    end,
+})
+
+
+require("fidget").setup()
+require("mason").setup({
+    ui = {
+        icons = {
+            package_installed = "",
+            package_pending = "",
+            package_uninstalled = "",
+        },
+    }
+})
+require 'nvim-treesitter.configs'.setup {
+    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "rust", "typescript", "javascript", "sql", "go" },
+    sync_install = false,
+    auto_install = true,
+    highlight = {
+        enable = true,
+        additional_vim_regex_highlighting = false,
+    },
+}
+
+
 ------------------
 ---  Key Maps  ---
 ------------------
@@ -59,7 +165,6 @@ keymap.set('n', "<C-t><C-t>", "<CMD>FloatermNew --height=0.9 --width=0.8 <CR>")
 -----------------
 ---    SET    ---
 -----------------
---
 local set = vim.opt
 set.nu = true
 set.relativenumber = true
@@ -85,118 +190,19 @@ set.smartcase = true -- search is case-insensitive unless you include a capital 
 
 
 
-
 vim.cmd 'colorscheme material'
 vim.g.material_style = 'oceanic'
 
-
------------------
----  PLUGINS  ---
------------------
-require('packer').startup(function(use)
-    use 'wbthomason/packer.nvim'
-    use('kaicataldo/material.vim')
-    use('ryanoasis/vim-devicons')
-    use('BurntSushi/ripgrep')
-    use('mbbill/undotree')
-    use('preservim/nerdcommenter')
-    use('nvim-lua/popup.nvim')
-    use('nvim-lua/plenary.nvim')
-    use('nvim-telescope/telescope.nvim')
-    use {
-        "nvim-telescope/telescope-file-browser.nvim",
-        requires = { "nvim-telescope/telescope.nvim", "nvim-lua/plenary.nvim" }
-    }
-    use { 'nvim-telescope/telescope-fzf-native.nvim', run =
-    'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
-    use('nvim-treesitter/nvim-treesitter')
-    use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
-        requires = {
-            -- LSP Support
-            { 'neovim/nvim-lspconfig' },
-            {
-                'williamboman/mason.nvim',
-                run = function()
-                    pcall(vim.cmd, 'MasonUpdate')
-                end,
-            },
-            { 'williamboman/mason-lspconfig.nvim' },
-            { 'hrsh7th/nvim-cmp' },
-            { 'hrsh7th/cmp-nvim-lsp' },
-            -- yeet the below plugins if cmp gets annoying
-            { 'hrsh7th/cmp-path' },
-            { 'hrsh7th/cmp-buffer' },
-            { 'L3MON4D3/LuaSnip' },
-            { 'saadparwaiz1/cmp_luasnip' },
-        }
-    }
-    use('simrat39/rust-tools.nvim')
-    use 'j-hui/fidget.nvim'
-    require('packer').startup(function()
-        use { 'stevearc/dressing.nvim' }
-    end)
-    use 'tamton-aquib/staline.nvim'
-    use 'theprimeagen/harpoon'
-    use { 'alexghergh/nvim-tmux-navigation', config = function()
-        require 'nvim-tmux-navigation'.setup {
-            disable_when_zoomed = true, -- defaults to false
-            keybindings = {
-                left = "<C-h>",
-                down = "<C-j>",
-                up = "<C-k>",
-                right = "<C-l>",
-                last_active = "<C-\\>",
-                next = "<C-Space>",
-            }
-        }
+local ensure_packer = function()
+    local fn = vim.fn
+    local install_path = fn.stdpath('data') .. '/site/pack/packer/start/packer.nvim'
+    if fn.empty(fn.glob(install_path)) > 0 then
+        fn.system({ 'git', 'clone', '--depth', '1', 'https://github.com/wbthomason/packer.nvim', install_path })
+        vim.cmd [[packadd packer.nvim]]
+        return true
     end
-    }
-    use { "voldikss/vim-floaterm" }
-end)
-
-require("telescope").load_extension "file_browser"
-local previewers = require("telescope.previewers")
-local builtin = require("telescope.builtin")
-
-local delta_bcommits = previewers.new_termopen_previewer({
-    get_command = function(entry)
-        return {
-            "git",
-            "-c",
-            "core.pager=delta",
-            "-c",
-            "delta.side-by-side=false",
-            "diff",
-            entry.value .. "^!",
-            "--",
-            entry.current_file,
-        }
-    end,
-})
-
-
-require("fidget").setup()
-require("mason").setup({
-    ui = {
-        icons = {
-            package_installed = "",
-            package_pending = "",
-            package_uninstalled = "",
-        },
-    }
-})
-require 'nvim-treesitter.configs'.setup {
-    ensure_installed = { "c", "lua", "vim", "vimdoc", "query", "rust", "typescript", "javascript", "sql", "go" },
-    sync_install = false,
-    auto_install = true,
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-    },
-}
-
+    return false
+end
 
 
 -----------------
@@ -301,9 +307,9 @@ vim.diagnostic.config({
 })
 
 vim.cmd([[
-set signcolumn=yes
-autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
-]])
+   set signcolumn=yes
+   autocmd CursorHold * lua vim.diagnostic.open_float(nil, { focusable = false })
+   ]])
 
 vim.opt.completeopt = { 'menuone', 'noselect', 'noinsert' }
 vim.opt.shortmess = vim.opt.shortmess + { c = true }
