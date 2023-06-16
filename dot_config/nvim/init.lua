@@ -83,7 +83,6 @@ local delta_bcommits = previewers.new_termopen_previewer({
 })
 
 
-require("fidget").setup()
 require("mason").setup({
     ui = {
         icons = {
@@ -187,6 +186,8 @@ set.termguicolors = true
 set.scrolloff = 8
 set.ignorecase = true
 set.smartcase = true -- search is case-insensitive unless you include a capital letter
+
+
 
 
 

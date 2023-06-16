@@ -1,1 +1,2 @@
 alias n="cd $HOME/.config/nvim"
+eval "$(thefuck --alias)"
