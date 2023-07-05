@@ -59,10 +59,36 @@ require('packer').startup(function(use)
     end
     }
     use { "voldikss/vim-floaterm" }
+    use { "petertriho/nvim-scrollbar", config = function()
+        require("scrollbar").setup()
+    end
+    }
+    use { "folke/noice.nvim", requires = {
+        { 'neovim/nvim-lspconfig' },
+        { 'MunifTanjim/nui.nvim', }
+    } }
 end)
 
 
-require("telescope").load_extension "file_browser"
+
+require("noice").setup({
+    notify = {
+        enabled = false
+    },
+    commands = {
+        enabled = false
+    },
+    presets = {
+        bottom_search = false,        -- use a classic bottom cmdline for search
+        command_palette = true,       -- position the cmdline and popupmenu together
+        long_message_to_split = true, -- long messages will be sent to a split
+        inc_rename = false,           -- enables an input dialog for inc-rename.nvim
+        lsp_doc_border = false,       -- add a border to hover docs and signature help
+    },
+})
+
+
+require("telescope").load_extension("file_browser")
 local previewers = require("telescope.previewers")
 local builtin = require("telescope.builtin")
 
@@ -101,6 +127,7 @@ require 'nvim-treesitter.configs'.setup {
         additional_vim_regex_highlighting = false,
     },
 }
+
 
 
 ------------------
